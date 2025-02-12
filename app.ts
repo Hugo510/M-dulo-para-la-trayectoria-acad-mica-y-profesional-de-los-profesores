@@ -9,8 +9,6 @@ import env from "./config/env";
 import logger from "./config/logger";
 import sequelize from "./config/db";
 
-import authRoutes from "./routes/auth";
-
 // Inicializar la aplicación Express
 const app = express();
 
@@ -51,8 +49,23 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Ejemplo de integración de rutas
+import authRoutes from "./routes/auth.routes";
+import teacherRoutes from "./routes/teacher.routes";
+import educationRoutes from "./routes/education.routes";
+import experienceRoutes from "./routes/experience.routes";
+import certificationRoutes from "./routes/certification.routes";
+import cvArchiveRoutes from "./routes/cvArchive.routes";
+import skillRoutes from "./routes/skill.routes";
+import teacherSkillRoutes from "./routes/teacherSkill.routes";
+
 app.use("/api/auth", authRoutes);
+app.use("/api/teachers", teacherRoutes);
+app.use("/api/education", educationRoutes);
+app.use("/api/experience", experienceRoutes);
+app.use("/api/certifications", certificationRoutes);
+app.use("/api/cvArchive", cvArchiveRoutes);
+app.use("/api/skills", skillRoutes);
+app.use("/api/teacher-skills", teacherSkillRoutes);
 
 // Middleware global para manejo de errores
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
