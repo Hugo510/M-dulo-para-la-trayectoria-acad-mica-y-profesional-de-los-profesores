@@ -1,23 +1,31 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useAuthStore } from '../store/authStore';
+import { Input } from '../components/Input';
+import { Label } from '../components/Label';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-interface PerfilForm {
-  nombre: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-}
+const perfilSchema = z.object({
+  first_name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres' }),
+  last_name: z.string().min(2, { message: 'El apellido debe tener al menos 2 caracteres' }),
+  email: z.string().email({ message: 'Correo electrónico inválido' }),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+});
+
+type PerfilForm = z.infer<typeof perfilSchema>;
 
 export const PerfilPage = () => {
   const { user } = useAuthStore();
   const { register, handleSubmit, formState: { errors } } = useForm<PerfilForm>({
+    resolver: zodResolver(perfilSchema),
     defaultValues: {
-      nombre: user?.nombre || '',
+      first_name: user?.first_name || '',
+      last_name: user?.last_name || '',
       email: user?.email || '',
-      telefono: '',
-      direccion: '',
+      phone: user?.phone || '',
+      address: user?.address || '',
     }
   });
 
@@ -32,73 +40,93 @@ export const PerfilPage = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-primary mb-6">Mi Perfil</h1>
-        
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <div className="max-w-3xl mx-auto p-8">
+      <div className="bg-white shadow rounded-lg p-6">
+        <h1 className="text-2xl font-bold text-primary mb-8">Mi Perfil</h1>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nombre Completo</label>
-            <input
+            <Label htmlFor="first_name">Nombre</Label>
+            <Input
+              id="first_name"
               type="text"
-              {...register('nombre', { required: 'Este campo es requerido' })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              register={register}
+              name="first_name"
+              errors={errors}
+              validation={{
+                required: 'Este campo es requerido',
+                minLength: {
+                  value: 2,
+                  message: 'El nombre debe tener al menos 2 caracteres'
+                }
+              }}
             />
-            {errors.nombre && (
-              <p className="mt-1 text-sm text-red-600">{errors.nombre.message}</p>
-            )}
+          </div>
+          <div>
+            <Label htmlFor="last_name">Apellido</Label>
+            <Input
+              id="last_name"
+              type="text"
+              register={register}
+              name="last_name"
+              errors={errors}
+              validation={{
+                required: 'Este campo es requerido',
+                minLength: {
+                  value: 2,
+                  message: 'El apellido debe tener al menos 2 caracteres'
+                }
+              }}
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-            <input
+            <Label htmlFor="email">Correo Electrónico</Label>
+            <Input
+              id="email"
               type="email"
-              {...register('email', {
+              register={register}
+              name="email"
+              errors={errors}
+              validation={{
                 required: 'Este campo es requerido',
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                   message: 'Correo electrónico inválido'
                 }
-              })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              }}
             />
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Teléfono</label>
-            <input
+            <Label htmlFor="phone">Teléfono</Label>
+            <Input
+              id="phone"
               type="tel"
-              {...register('telefono', {
-                pattern: {
-                  value: /^[0-9]{10}$/,
-                  message: 'Teléfono inválido (10 dígitos)'
-                }
-              })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              register={register}
+              name="phone"
+              errors={errors}
             />
-            {errors.telefono && (
-              <p className="mt-1 text-sm text-red-600">{errors.telefono.message}</p>
-            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Dirección</label>
+            <Label htmlFor="address">Dirección</Label>
             <textarea
-              {...register('direccion')}
+              id="address"
+              {...register('address')}
               rows={3}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-          >
-            Guardar Cambios
-          </button>
+          <div className="md:col-span-2">
+            <button
+              type="submit"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            >
+              Guardar Cambios
+            </button>
+          </div>
         </form>
       </div>
     </div>

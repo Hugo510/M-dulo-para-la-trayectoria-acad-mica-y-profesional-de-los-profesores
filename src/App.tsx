@@ -8,6 +8,7 @@ import { PerfilPage } from './pages/PerfilPage';
 import { CVPage } from './pages/CVPage';
 import { BusquedaPage } from './pages/BusquedaPage';
 import { ReportesPage } from './pages/ReportesPage';
+import { RegisterPage } from './pages/RegisterPage';
 import { useAuthStore } from './store/authStore';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -22,6 +23,7 @@ function App() {
       <Toaster position="top-right" />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/" element={
           <ProtectedRoute>
             <Layout />

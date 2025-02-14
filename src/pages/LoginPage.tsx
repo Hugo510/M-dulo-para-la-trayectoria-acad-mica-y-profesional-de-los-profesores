@@ -4,6 +4,7 @@ import { loginSchema } from '../schemas/authSchemas';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuthStore } from '../store/authStore';
+import { Link } from 'react-router-dom';
 
 interface LoginForm {
   email: string;
@@ -89,6 +90,10 @@ export const LoginPage = () => {
               Iniciar Sesión
             </button>
           </form>
+          <div className="mt-4 text-center">
+            <span>¿No tienes cuenta? </span>
+            <Link to="/register" className="text-primary hover:underline">Regístrate</Link>
+          </div>
         </div>
       </div>
     </div>
