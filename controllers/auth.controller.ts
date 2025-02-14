@@ -1,6 +1,7 @@
 // /src/controllers/auth.controller.ts
 import { Request, Response, NextFunction } from "express";
 import authService from "../services/auth.service";
+import logger from "../config/logger"; // Nuevo import para manejo de errores
 
 class AuthController {
   /**
@@ -15,6 +16,7 @@ class AuthController {
       const teacher = await authService.registerTeacher(req.body);
       res.status(201).json({ teacher });
     } catch (error: any) {
+      logger.error("Error en register controller: %o", error);
       next(error);
     }
   }
@@ -31,6 +33,7 @@ class AuthController {
       );
       res.json({ token, teacher });
     } catch (error: any) {
+      logger.error("Error en login controller: %o", error);
       next(error);
     }
   }
