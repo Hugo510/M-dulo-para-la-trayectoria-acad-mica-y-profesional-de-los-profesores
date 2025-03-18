@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useAuthStore } from '../store/authStore';
@@ -5,6 +6,7 @@ import { Input } from '../components/Input';
 import { Label } from '../components/Label';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useUserStore } from "../store/userStore";
 
 const perfilSchema = z.object({
   first_name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres' }),
@@ -18,6 +20,7 @@ type PerfilForm = z.infer<typeof perfilSchema>;
 
 export const PerfilPage = () => {
   const { user } = useAuthStore();
+  const { profile, loading, error, fetchProfile, updateProfile } = useUserStore();
   const { register, handleSubmit, formState: { errors } } = useForm<PerfilForm>({
     resolver: zodResolver(perfilSchema),
     defaultValues: {
@@ -29,12 +32,15 @@ export const PerfilPage = () => {
     }
   });
 
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
   const onSubmit = async (data: PerfilForm) => {
     try {
-      // TODO: Implementar actualización de perfil
-      console.log(data);
+      await updateProfile(data);
       toast.success('Perfil actualizado correctamente');
-    } catch (error) {
+    } catch {
       toast.error('Error al actualizar el perfil');
     }
   };
@@ -43,6 +49,20 @@ export const PerfilPage = () => {
     <div className="max-w-3xl mx-auto p-8">
       <div className="bg-white shadow rounded-lg p-6">
         <h1 className="text-2xl font-bold text-primary mb-8">Mi Perfil</h1>
+
+        {loading ? (
+          <p>Cargando perfil...</p>
+        ) : error ? (
+          <p className="text-red-600">Error: {error}</p>
+        ) : profile ? (
+          <div>
+            <h1>{profile.first_name} {profile.last_name}</h1>
+            <p>Email: {profile.email}</p>
+            {/* ...otros campos... */}
+          </div>
+        ) : (
+          <p>No se encontró el perfil</p>
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>

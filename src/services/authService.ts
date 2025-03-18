@@ -1,13 +1,12 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const API_URL =
-  import.meta.env.VITE_API_AUTH_URL || "http://localhost:8080/api/auth";
+const API_URL = import.meta.env.VITE_API_AUTH_URL || "/auth";
 
 // ...otras configuraciones o imports si fuese necesario...
 
 export const authService = {
   login: (email: string, password: string) => {
-    return axios.post(`${API_URL}/login`, { email, password });
+    return axiosInstance.post(`${API_URL}/login`, { email, password });
   },
   register: (data: {
     first_name: string;
@@ -18,7 +17,7 @@ export const authService = {
     address?: string;
     date_of_birth?: string;
   }) => {
-    return axios.post(`${API_URL}/register`, data);
+    return axiosInstance.post(`${API_URL}/register`, data);
   },
   // ...otros métodos de autenticación si son necesarios...
 };

@@ -28,7 +28,7 @@ export const CVPage = () => {
       // TODO: Implementar guardado de CV
       console.log(data);
       toast.success('Información guardada correctamente');
-    } catch (error) {
+    } catch {
       toast.error('Error al guardar la información');
     }
   };
