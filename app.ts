@@ -57,6 +57,7 @@ import certificationRoutes from "./routes/certification.routes";
 import cvArchiveRoutes from "./routes/cvArchive.routes";
 import skillRoutes from "./routes/skill.routes";
 import teacherSkillRoutes from "./routes/teacherSkill.routes";
+import teacherProfileRoutes from "./routes/teacherProfile.routes";
 
 app.use("/api/auth", authRoutes);
 app.use("/api/teachers", teacherRoutes);
@@ -66,6 +67,7 @@ app.use("/api/certifications", certificationRoutes);
 app.use("/api/cvArchive", cvArchiveRoutes);
 app.use("/api/skills", skillRoutes);
 app.use("/api/teacher-skills", teacherSkillRoutes);
+app.use("/api/teacher-profile", teacherProfileRoutes);
 
 // Middleware global para manejo de errores
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
